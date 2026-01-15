@@ -24,12 +24,13 @@ EXIT_PARTIAL = 1
 EXIT_FAILURE = 2
 
 
-def run(config: AppConfig) -> int:
+def run(config: AppConfig, console_only: bool = False) -> int:
     """
     Execute the DCA alert check.
 
     Args:
         config: Application configuration
+        console_only: If True, skip email notifications even if configured
 
     Returns:
         Exit code (0=success, 1=partial, 2=failure)
@@ -87,7 +88,9 @@ def run(config: AppConfig) -> int:
     console_success = console.send(report)
 
     email_success = True
-    if config.email:
+    if console_only:
+        logger.info("Email notifications disabled (--no-email flag)")
+    elif config.email:
         email_notifier = EmailNotifier(config.email)
         email_success = email_notifier.send(report)
     else:
@@ -127,9 +130,10 @@ Exit codes:
   2  Failure - no market data retrieved OR critical error
 
 Examples:
-  %(prog)s                      # Run with defaults
+  %(prog)s                        # Run with defaults
   %(prog)s -c config/config.yaml  # Use custom config file
-  %(prog)s --no-color            # Run without colored output
+  %(prog)s --no-color             # Run without colored output
+  %(prog)s --no-email             # Only output to console, skip emails
         """,
     )
     parser.add_argument(
@@ -146,6 +150,11 @@ Examples:
         "--no-color",
         action="store_true",
         help="Disable colored output",
+    )
+    parser.add_argument(
+        "--no-email",
+        action="store_true",
+        help="Skip email notifications (console output only)",
     )
 
     parsed = parser.parse_args(args)
@@ -164,7 +173,7 @@ Examples:
     configure_logging(log_level, force_color)
 
     try:
-        return run(config)
+        return run(config, console_only=parsed.no_email)
     except KeyboardInterrupt:
         logger.info("Interrupted by user")
         return EXIT_FAILURE
