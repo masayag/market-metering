@@ -1,0 +1,29 @@
+# DCA Alerts Configuration
+# Environment variables take precedence over this file
+
+indices:
+  - symbol: "^GSPC"
+    name: "S&P 500"
+  - symbol: "^NDX"
+    name: "NASDAQ 100"
+  - symbol: "^RUT"
+    name: "Russell 2000"
+
+analysis:
+  drop_increment: 5  # Percentage increment for buy signals
+
+storage:
+  ath_path: "./data/ath_records.json"
+
+market:
+  fetch_timeout_seconds: 30
+
+email:
+  smtp_host: "smtp.gmail.com"
+  smtp_port: 587
+  use_tls: true
+  # Credentials must be provided via environment variables:
+  # DCA_SMTP_USER, DCA_SMTP_PASSWORD, DCA_SENDER_EMAIL, DCA_RECIPIENT_EMAIL
+
+logging:
+  level: "INFO"
