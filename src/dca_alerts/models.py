@@ -14,6 +14,7 @@ class IndexSymbol(Enum):
     SP500 = "^GSPC"
     NASDAQ100 = "^NDX"
     RUSSELL2000 = "^RUT"
+    TA125 = "^TA125.TA"
 
     @property
     def display_name(self) -> str:
@@ -22,6 +23,7 @@ class IndexSymbol(Enum):
             IndexSymbol.SP500: "S&P 500",
             IndexSymbol.NASDAQ100: "NASDAQ 100",
             IndexSymbol.RUSSELL2000: "Russell 2000",
+            IndexSymbol.TA125: "TA-125",
         }
         return names[self]
 
